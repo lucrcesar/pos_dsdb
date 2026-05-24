@@ -1,0 +1,1030 @@
+---
+title: "3. Métodos Numéricos"
+format: html
+editor: visual
+---
+
+<!-- OBS: -->
+
+# OBSERVAÇÕES SOBRE O SCRIPT
+
+0.  A lista é de todos e para todos!
+1.  Não altere o cabeçalho entre as linhas 1 a 5! Talvez isso crie bugs (ou não)\
+2.  Este documento utiliza Markdown para escrever o conteúdo. Segue breve resumo de como utilizar:\
+    - Separe parágrafos com uma barra ao final invertida ao final\
+      - Se não colocar, o texto pode ficar bugado e mais dificil de ler!\
+    - Fórmulas estão anotadas entre um ou dois cifrões '\$' ao início e fim\
+      - Um cifrão deixa a fórmula dentro do parágrafo\
+      - Dois cifrões deixam a fórmula centralizada na tela\
+    - Insira barra invertida em todas as quebras de parágrafo e inclusive em itens de listas como esta!\
+    - Como copiar fórmulas do prof na lista de exercícios no moodle:\
+      - Clique com o botão direito do mouse em cima da fórmula\
+      - Selecione 'Copy to Clipboard'\
+      - Selecione 'TeX Commands'\
+      - Cole aqui no script, inserindo cifrões '\$' antes e depois da fórmula\
+3.  Cole todo cabeçalho aqui no script, inclusive os dados fornecidos! isso ajuda as outras pessoas encontrarem ela via CTRL+F depois\
+4.  Janis confirmou que nem todo mundo tem a mesma lista, alguns exercícios podem ser diferentes!\
+    Sugiro que todo mundo verifique se tem exercícios novos, e se sim, adicione eles nos tópicos abaixo.\
+    Assim, podemos ir reunindo e respondendo todos os exercícios possíveis.\
+5.  A numeração dos exercícios está de acordo com a ordem que fui anotando. Basta incrementa-los na sequência em que forem adicionados outros novos.\
+6. Para encontrar um exercício que já exista aqui, só usar um CTRL+F e colar parte do cabeçalho
+
+------------------------------------------------------------------------
+
+# MÉTODOS NUMÉRICOS
+
+## 1. Sistemas de Equações não-lineares
+
+Métodos numéricos para resolver equações:\
+Ex$_1$: $3x + 8 = 0 \rightarrow x=-\frac{8}{3}$\
+Ex$_2$: $8−4.5(𝑥−sin(𝑥))=0 \rightarrow𝑥=?$\
+
+Solução numérica de $f(x)$ é um valor de $x$ que satisfaz a equação de forma aproximada.\
+
+Dois tipos de métodos numéricos para resolução de equações:\
+1. Métodos de confinamento\
+2. Métodos abertos\
+
+## 2. Métodos de Confinamento
+
+Síntese:\
+1. Identifica-se um intervalor que possua solução\
+ex: entre $x=-1$ e $x=1$ 2. Redução sucessiva do intervalo via método numérico até que se aproxime ao resultado desejado.
+
+```{r}
+par(mfrow=c(1,3)) # possibilita visualizar três gráficos, um ao lado do outro
+
+# Função do gráfico
+f <- function(x) {
+  x^2 + x - 0.5
+}
+
+# Raiz aproximada
+raiz <- uniroot(f, interval = c(0.1, 0.5))$root
+
+# Valores do eixo x
+x_min <- 0.1
+x_max <- 0.5
+
+# Configura o painel com 3 gráficos lado a lado
+par(mfrow = c(1, 3))
+
+# -------------------
+# Passo 1
+# -------------------
+
+# cria o gráfico de linha fom a função 'f'
+curve(f(x),
+  from = x_min,
+  to = x_max,
+  xlab = "x",
+  ylab = "f(x)",
+  main = "Passo 1",
+  ylim = c(-0.6, 0.5)
+)
+
+abline(h = 0)   # cria as linhas horizontais e verticais 
+abline(v = c(0.15, 0.45))
+
+# cria o ponto no local escolhido
+points(raiz, f(raiz),  pch = 1, cex = 1.2, lwd = 2)
+
+# -------------------
+# Passo 2
+# -------------------
+
+curve(
+  f(x), from = x_min, to = x_max,
+  xlab = "x", ylab = "f(x)",  main = "Passo 2",
+  ylim = c(-0.6, 0.5)
+)
+
+abline(h = 0)
+abline(v = c(0.30, 0.45))
+
+points(raiz, f(raiz), pch = 1,cex = 1.2, lwd = 2)
+
+# -------------------
+# Passo 3
+# -------------------
+
+curve(
+  f(x), from = x_min, to = x_max,
+  xlab = "x", ylab = "f(x)", main = "Passo 3",
+  ylim = c(-0.6, 0.5))
+
+abline(h = 0)
+abline(v = c(0.30, 0.38))
+
+points(raiz, f(raiz), pch = 1, cex = 1.2, lwd = 2)
+```
+
+## 3. Métodos Abertos
+
+1.  Assume-se uma estimativa inicial\
+2.  Tentativa inicial deve ser a próxima solução\
+3.  Usando um esquema numérico, a solução é sucessivamente melhorada\
+4.  Processo para quando a precisão desejada é atingida\
+
+Ao invés do Método de Confinamento, aqui não há um intervalo a ser aproximado, mas sim tentativas sucessivas de aproximação através de um único ponto (via derivadas?)
+
+## 4. Erros em soluções numéricas
+
+Um dos critérios para se definir a precisão de uma solução é o erro via processos de minimização.\
+
+Considere $x_{ts}$ o resultado verdadeiro ('true solution'), e $x_{ns}$ a solução numérica obtida ('numeric solution'):\
+1. Erro real: $x_{ts} - x_{ns}$\
+Basicamente, o valor real subtraido do valor obtido pela solução.\
+
+2.  Tolerância em $f(x)$: $|f(x_{ts}) - f(x_{ns})| = |0 - \epsilon| = |\epsilon|$\
+    Queremos uma solução tal qual $f(x)=0$, erro nulo. Contudo, nunca obtemos esse valor, mas apenas uma aproximação com um intervalo de segurança, sendo $|f(x_{ns})| < \epsilon$. Ou seja, que nossa solução alcançe um intervalo de erro em módulo menor que o erro considerado aceitável $\epsilon$ (pré-determinado por nós mesmos).\
+    Ex: se aceitamos que o erro aceitável é de $0.001$ e nossa solução for $0.0003$, $|0.0003 < 0.001|$, ou seja, o modelo está aceitável. Esta solução é muito utilizada em Métodos Abertos.\
+
+3.  Tolerância no tamanho de intervalo de busca: $|\frac{b-a}{2}|$\
+    Aplicado em Métodos de Confinamento, aqui se trata da média entre dois pontos em aproximação. Suponha um ponto $a = 0.36$ à esquerda e $b=0.38$ a direita do ponto ótimo buscado. $|\frac{b-a}{2}| = |\frac{0.38 - 0.36}{2} = 0.01$. Se erro $0.01$ já for pequeno o suficiente, considera-se solução atingida via aproximação do confinamento.\
+
+4.  Erro relativo estimado: $|\frac{x^n_{ns}-x^{n-1}_{ns}}{x^{n-1}_{ns}}|$\
+    Aqui se busca um valor ótimo aproximado via redução sucessiva da diferença entre os valores de solução obtidos. Seja $x^n_{ns}=0,370$ a solução numérica na iteração atual e $x^{n-1}_{ns}=0,368$ a da iteração anterior,\
+    $$|\frac{x^n_{ns}-x^{n-1}_{ns}}{x^{n-1}_{ns}}| = |\frac{0,370-0,368}{0,370}|=|\frac{-0,02}{0,370}|=\approx0,0054$$\
+    Se o valor de erro obtido $0,0054$ ($0,54%$) for menor ou igual ao erro aceitável, a solução pode parar por aqui, senão, continua-se as iterações até que se atinja o valor desejado.
+
+## 5. Métodos de Confinamento
+
+### 5.1 Método da Bisseção
+
+- Sabe-se que a função $f(x)$ é contínua e possui solução\
+  (possui solução = sempre passa pelo ponto $x=0$?)\
+- São escolhidos uma faixa de $[a,b]$\
+- Pontos $a$ e $b$ sempre têm sinais opostos
+
+```{r}
+f1 <- function(x) {
+  -log(x / 0.37)
+}
+
+f2 <- function(x) {
+  log(x / 0.37)
+}
+
+par(
+  mfrow = c(1, 2),
+  mar = c(4, 4, 1, 1),
+  oma = c(0, 0, 0, 0)
+)
+
+grafico_bissecao <- function(f, texto_1, texto_2, pos_texto_1, pos_texto_2) {
+  curve(
+    f(x), from = 0.1, to = 1,
+    xlim = c(0.1, 1.04), ylim = c(-1.1, 1.1),
+    xlab = "x", ylab = "f(x)",
+    lwd = 1, axes = FALSE
+  )
+  
+  axis(1, at = seq(0.2, 1, 0.2))
+  axis(2, at = seq(-1, 1, 0.5))
+  box()
+  abline(h = 0)
+  a <- 0.2
+  b <- 0.8
+  raiz <- 0.37
+  xns <- 0.5
+  
+  segments(x0 = a, y0 = 0, x1 = a, y1 = f(a), lty = 2)
+  segments(x0 = b, y0 = 0,x1 = b, y1 = f(b), lty = 2)
+  points(x = c(a, b, xns), y = c(0, 0, 0), pch = 19, cex = 1.1)
+  points(x = c(a, b), y = c(f(a), f(b)), pch = 19, cex = 1.1)
+  points(x = raiz, y = 0, pch = 19, col = "red", cex = 1.1)
+  text(x = a, y = -0.1, labels = "a", cex = 1.1)
+  text(x = b,y = 0.1,labels = "b",cex = 1.1)
+  text(x = xns, y = 0.12, labels = expression(x[ns]), cex = 1.1)
+  text(x = pos_texto_1[1], y = pos_texto_1[2], labels = texto_1, cex = 1.2)
+  text(x = pos_texto_2[1], y = pos_texto_2[2], labels = texto_2, cex = 1.2)
+}
+
+grafico_bissecao(f = f1,
+  texto_1 = "f(a) > 0", texto_2 = "f(b) < 0",
+  pos_texto_1 = c(0.42, 0.78), pos_texto_2 = c(0.33, -0.48))
+
+grafico_bissecao(f = f2,
+  texto_1 = "f(b) > 0", texto_2 = "f(a) < 0",
+  pos_texto_1 = c(0.66, 0.78), pos_texto_2 = c(0.64, -0.48))
+```
+
+Algoritmo do slide prof. Wagner (com comentários próprios)
+
+```{r}
+bissecao <-function( 
+    # deve-se informar os seguintes valores/campos:
+      fx,          # função de x
+      a,           # valor inicial de 'a'
+      b,           # valor inicial de 'b'
+      tol=1e-04,   # valor de tolerância para o erro. '1e-04' = 0,0001
+      max_iter=100 # número máximo de iterações
+    ) {
+  # valores nos pontos 'a' e 'b' dentro da função 'f(x)
+  fa <- fx(a); 
+  fb <- fx(b); 
+  
+  # condição de parada: 'a' e 'b' devem ter sinais opostos. 
+  if(fa * fb > 0) stop("Solução não está no intervalo")
+  
+  solucao <- c();     # cria o objeto 'solucao'
+  sol <- (a + b) / 2; # determinação da regra da bisseção: média entre diff a e b
+                      # aqui será calculado o valor da solução obtida
+                      # solução está no ponto médio entre 'a' e 'b'
+  solucao[1] <- sol;  # salvando a solução obtida no objeto lista, para posterior observação
+  limites <- matrix(NA, ncol = 2, nrow = max_iter) # matriz vazia para depois expor as soluções de cada iteração
+  
+  for( i in 1 : max_iter) { # iniciando iterações
+    test<-fx(a)*fx(sol)     # calculo do erro obtido
+    if(test < 0) {          # condição: 'se erro for menor que zero'
+      
+      # testa se valor de 'a' cruzou x=0, ou seja, se 'a' está a esquerda ou a direita do ponto médio
+      # se sim, é como se visualmente acontecesse isto:
+          # a -------------- ponto_otimo --------------- b : antiga solução entre [a,b]
+          # a -------------- ponto_otimo --- solução --- b : solução se encontra entr e[a,sol]
+          # a -------------- ponto_otimo --- b             : novo valor de 'b' deve ser o da solução
+      # salvar resultado na matriz 'solucao'
+      solucao[i + 1] <- (a + sol) / 2   
+      b = sol 
+    }
+    if(test > 0) {  # idem primeiro teste, só que com 'a'
+      solucao[i+1] <- (b + sol) / 2
+      a=sol 
+    }
+    
+    if(abs( (b-a)/2) < tol) break   # Freio se último erro obtido via iteração for menor que a tolerância
+    sol=solucao[i+1]                # atualiza o novo valor a ser testado na proxima iteração
+                                    # esse é o valor obtido na última iteração
+                                    # é o novo valor de 'a' ou 'b' obtido via regra ( a ou b + sol_anterior) / 2
+    limites[i,]<-c(a,b)             # salva o novo valor de 'a' e 'b' obtidos na iteração
+  }
+  out <-list("Tentativas" = solucao, "Limites"=limites, "Raiz"=solucao[i+1])
+  return(out)
+}
+```
+
+Algoritmo do slide prof. Wagner (sem comentários próprios)
+
+```{r}
+bissecao <-function(fx,a,b,tol=1e-04,max_iter=100) {
+  fa <- fx(a);   fb<- fx(b); 
+  if(fa * fb > 0) stop("Solução não está no intervalo")
+  solucao <- c();  
+  sol <- (a + b) / 2; 
+  solucao[1] <- sol;
+  limites <- matrix(NA, ncol = 2, nrow = max_iter) #
+  for( i in 1 : max_iter) {
+    test<-fx(a)*fx(sol)
+    if(test < 0) {
+      solucao[i + 1] <- (a + sol) / 2
+      b = sol 
+    }
+    if(test > 0) {
+      solucao[i+1] <- (b + sol) / 2
+      a=sol 
+    }
+    if(abs( (b-a)/2) < tol) break
+    sol=solucao[i+1]
+    limites[i,]<-c(a,b) 
+  }
+  out <-list("Tentativas" = solucao, "Limites"=limites, "Raiz"=solucao[i+1])
+  return(out)
+}
+```
+
+Exemplo dos slides: encontre a raíz de\
+$$D(\theta) =2n \left[\log \left( \frac{\hat{\theta}}{\theta} \right)+\bar{y}(\theta - \hat{\theta})\right]\leq 3.84$$
+
+```{r}
+ftheta <- function(theta) {
+  dd <- 2*length(y)*(log(theta.hat/theta) + mean(y)*(theta - theta.hat))
+  return(dd - 3.84)  # Queremos obter o valor de theta para que 'theta - 3,84 = 0')
+}
+
+# Utilizar seed '123' torna o exercício reprodutível.
+# Sempre que for criado uma distribuição aleatória, ela utilizará os dados deste seed
+set.seed(123) 
+
+# gera uma amostra aleatória com 20 observações de uma distribuição exponencial com taxa == 1
+y <- rexp(20, rate=1) 
+
+# média amostral de uma distribuição exponencial é 1/(média de y)
+theta.hat <- 1/mean(y)
+
+# testa se a for fixo = 0, ou seja, [0,theta.hat] (ou [0, solução])
+ic_min <- bissecao(fx=ftheta, a=0, b=theta.hat)
+
+# testa o contrário, ou seja, [theta.hat, 3]
+ic_max <- bissecao(fx=ftheta, a=theta.hat, b=3)
+c(ic_min$Raiz,ic_max$Raiz) ## solução aproximada
+```
+
+<!-- -->
+
+# EXERCÍCIOS
+
+### Múltipla escolha (10x questoes) ----------------------------------------------------------------------------------------------
+
+1.  Qual dos métodos de programação não-linear abaixo é o mais indicado para problemas unidimensionais?\
+    { } a. Quasi-Newton\
+    { } b. Nelder-Mead\
+    { } c. Golden section search\
+    { } d. BFGS\
+    { } e. SANN\
+
+<!-- -->
+
+2.  Sobre o método de Newton é correto afirmar:\
+    { } a. É um método de confinamento e supõe-se que a função seja contínua, diferenciável e que a solução está no intervalo inicial.\
+    { } b. É um método de confinamento e supõe-se que a função seja contínua, diferenciável e que a solução está perto do valor inicial.\
+    { } c. É um método aberto e supõe-se que a função seja contínua, diferenciável e que a solução está no intervalo inicial.\
+    { } d. É um método aberto e supõe-se que a função seja contínua, diferenciável e que a solução está perto do valor inicial.\
+    { } e. É um método de confinamento em que não há necessidade da função ser contínua ou diferenciável.\
+
+<!-- -->
+
+3.  Sobre a Quadratura de Gauss-Hermite adaptativa, assinale a alternativa correta.\
+    { } a. Neste método o integrando é aproximado usando um polinômio de segundo grau.\
+    { } b. A ideia é tratar a integral como uma quantidade desconhecida da qual podemos retirar amostras para então estimar o valor da integral como uma média simples.\
+    { } c. A ideia básica é reescrever o integrando como um somatório.\
+    { } d. Contornando as limitações da quadratura de Gauss-Hermite, a ideia é simplesmente espalhar os pontos de forma mais inteligente para diminuir o número de pontos necessários para aproximar a integral.\
+    { } e. O método usa uma função linear para aproximar o integrando e integra a função aproximada de forma usual.
+
+<!-- -->
+
+4.  Sobre o Método de Monte Carlo, assinale a alternativa correta.\
+    { } a. Neste método o integrando é aproximado usando um polinômio de segundo grau.\
+    { } b. O método corresponde a usar o método Gauss-Hermite adaptativo com apenas um ponto de integração.\
+    { } c. Contornando as limitações da quadratura de Gauss-Hermite, a ideia é simplesmente espalhar os pontos de forma mais inteligente para diminuir o número de pontos necessários para aproximar a integral.\
+    { } d. A ideia básica é reescrever o integrando como um somatório.\
+    { } e. A ideia é tratar a integral como uma quantidade desconhecida da qual podemos retirar amostras para então estimar o valor da integral como uma média simples.\
+
+<!-- -->
+
+5.  Sobre a aproximação de Laplace, assinale a alternativa correta.\
+    { } a. O método usa uma função linear para aproximar o integrando e integra a função aproximada de forma usual.\
+    { } b. A ideia é tratar a integral como uma quantidade desconhecida da qual podemos retirar amostras para então estimar o valor da integral como uma média simples.\
+    { } c. A ideia básica é reescrever o integrando como um somatório.\
+    { } d. Neste método o integrando é aproximado usando um polinômio de segundo grau.\
+    { } e. O método corresponde a usar o método Gauss-Hermite adaptativo com apenas um ponto de integração.\
+
+<!-- -->
+
+6.  Com relação as derivadas numéricas é correto afirmar.\
+    { } a. Derivadas de ordem superior não podem ser obtidas usando aproximação por Séries de Taylor.\
+    { } b. Para obter derivada numérica de segunda ordem de uma função só é possível após obter a derivada de primeira ordem.\
+    { } c. Não é possível calcular a ordem do erro de aproximação de derivadas de ordem superior.\
+    { } d. Derivadas de ordem superior não podem ser obtidas usando os polinômios de Lagrange.\
+    { } e. Derivadas de segunda ordem podem ser obtidas usando a aproximação em Séries de Taylor.\
+
+<!-- -->
+
+7.  O cálculo do valor de uma derivada de forma numérica é indicado em pelo menos três situações, quais são elas?\
+    { } a. Quando a derivada é trivialmente obtida analiticamente. Quando a derivada e a função original são caras de avaliar computacionalmente. Quando a função é especificada apenas por um conjunto de pontos.\
+    { } b. Quando a derivada é trivialmente obtida analiticamente. Quando a derivada é cara de se calcular computacionalmente, porém a função original é barata de calcular computacionalmente. Quando a função é especificada apenas por um conjunto de pontos.\
+    { } c. Quando a derivada é difícil de se obter analiticamente. Quando a derivada analítica é cara de se calcular computacionalmente, porém a função original é barata de calcular computacionalmente. Quando a função é especificada apenas por um conjunto de pontos.\
+    { } d. Quando a derivada é dificil de ser obtida analiticamente. Quando a derivada analítica é simples de se calcular computacionalmente, porém a função original é cara de calcular computacionalmente. Quando a função é especificada apenas por um conjunto de pontos.\
+    { } e. Quando a derivada é dificil de obter de forma analitica. A função original é cara de calcular computacionalmente. Quando a função é especificada apenas por um conjunto de pontos.\
+
+<!-- -->
+
+8.  Com relação as abordagens para diferenciação numérica assinale a única alternativa incorreta.\
+    { } a. Se baseiam na ideia de aproximar o limite que define a derivada de forma aproximada computacionalmente.\
+    { } b. São métodos baseados em diferenças finitas.\
+    { } c. São métodos baseados em aproximar a função original por uma outra função de fácil derivação.\
+    { } d. O estado da arte em termos de derivadas numéricas é o método de diferenciação automática.\
+    { } e. São métodos baseados em truncar uma soma infinita.\
+
+<!-- -->
+
+9.  Para resolver uma integral de forma numérica existem pelo menos três abordagens, assinale a alternativa que corresponde a estas abordagens.\
+    { } a. Métodos baseados em soma finita. Aproximação da função por uma outra de fácil integração. Cálculo da inversa.\
+    { } b. Métodos baseados em soma finita. Aproximação da função por uma outra de fácil integração. Decomposição em autovalores e autovetores.\
+    { } c. Métodos baseados em soma finita. Decomposição em autovalores e autovetores. Estimação do valor da integral.\
+    { } d. Decomposição em autovalores e autovetores. Aproximação da função por uma outra de fácil integração. Estimação do valor da integral.\
+    { } e. Métodos baseados em soma finita. Aproximação da função por uma outra de fácil integração. Estimação do valor da integral.\
+
+<!-- -->
+
+10. Sobre o método de Simpson $1/3$, assinale a alternativa correta.\
+    { } a. A ideia básica é reescrever o integrando como um somatório.\
+    { } b. Neste método o integrando é aproximado usando um polinômio de segundo grau.\
+    { } c. Contornando as limitações da quadratura de Gauss-Hermite, a ideia é simplesmente espalhar os pontos de forma mais inteligente para diminuir o número de pontos necessários para aproximar a integral\
+    { } d. A ideia é tratar a integral como uma quantidade desconhecida da qual podemos retirar amostras para então estimar o valor da integral como uma média simples.\
+    { } e. O método usa uma função linear para aproximar o integrando e integra a função aproximada de forma usual.
+
+<!-- -->
+
+### Método de Richardson (3x) ----------------------------------------------------------------------------------------------
+
+1.  Calcule as derivadas parciais numéricas de primeira e segunda ordem da seguinte função de duas variáveis: $u=a^{2x+3y}$. Use o método de Richardson com $h=0.00001$. Avalie cada uma das derivadas no ponto $x=1$, $y=2$ e $a=0.5$. A resposta são seis valores numéricos na seguinte ordem: $u_x$, $u_y$, $u_{xx}$, $u_{yy}$, $u_{xy}$ e $u_{yx}$. Use arredondamento com três casas decimais para a sua resposta.
+
+```{r}
+
+```
+
+<!-- -->
+
+2.  Obtenha a derivada numérica usando o método de Richardson combinado com o método de diferença central.\
+    $$f(x) = \cos(x^2+3x)sin(5x-7)$$\
+    e avalie no ponto $x=5$. Considere a abordagem a um erro $O(h^4)$. A sua resposta é um número. Use cinco casas decimais se necessário. Use $h=0.001$\
+
+```{r}
+
+```
+
+<!-- -->
+
+3.  Obtenha a derivada numérica usando o método de Richardson combinado com o método de diferença central.\
+    $$f(x) = x^2e^xtang(x)$$\
+    e avalie no ponto $x=5$. A sua resposta é um número. Use cinco casas decimais se necessário. Use $h-0.001$. Use o método de Richardson de modo a obter uma aproximação de $O(h^6)$.
+
+```{r}
+
+```
+
+<!-- -->
+
+### Método de Newton (3x) ----------------------------------------------------------------------------------------------
+
+1.  Resolva o seguinte sistema de equações não lineares usando o método de Newton.\
+    $$    
+         \begin{aligned}
+         xy + y^2 -1 = 0 \\
+         xy^3 + x^2y^2 + 1 = 0\\
+         \end{aligned}$$\
+    A escolha de valor inicial é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_i| < \epsilon_i$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A sua resposta são as duas raízes $\hat{x}$ e $\hat{y}$. Use três casas decimais se necessário.
+
+```{r}
+
+```
+
+<!-- -->
+
+2.  Determine a raiz a direita do ponto crítico da equação:\
+    $$f(\mu,y_i)=-2\{e^{\mu}(\mu-1-y)+e^{\mu}\}-200$$\
+    usando o método de Newton. A escolha de valor inicial é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1}-x_1|<\epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A sua resposta é o valor da raiz use três casas decimais se necessário. Na equação os valores para $y_i$ são dados abaixo.
+
+```{r}
+# y
+##  [1] 3.390 7.379 1.630 4.778 8.874 5.531 2.216 1.582 7.471 5.296
+```
+
+<!-- -->
+
+3.  Resolva o seguinte sistema de equações não lineares usando o método de Newton. $$\begin{align}
+     sin(xy) + e^y - 7.10964 = 0 \\
+     (x + y)^2 - cos(xy^2) - 24.1561 = 0
+     \end{align}$$
+
+A escolha de valor inicial é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_{i} | < \epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de 0.0001. A sua resposta são as duas raízes $\hat{x}$ e $\hat{y}$. Use três casas decimais se necessário.
+
+```{r}
+
+```
+
+<!-- -->
+
+### Método de Nelder-Mead (3x) ----------------------------------------------------------------------------------------------
+
+1.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método Nelder-Mead usando as opções default da função optim() em R.\
+    $$L = \sum_{i=1}^{n}\ln(cosh(\mu_i-y_i)),\quad\text{onde}\quad\mu_i=\beta_0+\beta_1x_i$$ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$ é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, valor de $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0=0$ e $\beta_1=0$. A função $cosh$ é o coseno hiperbólico disponível em R via a função cosh().
+
+```{r}
+# xi
+##  [1] 0 1 3 2 2 3 2 2 2 1
+# yi
+##  [1] -2.262 -0.214  2.249 -0.164 -0.163  1.899  0.898 -1.648  0.229  1.154
+```
+
+<!-- -->
+
+2.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método Nelder-Mead usando as opções default da função optim() em R.
+
+$$L = -\frac{1}{n} \sum_{i=1}^n (y_i \ln(\mu_i) + (1- y_i) \ln(1-\mu_i)), \quad \text{onde} \quad
+\mu_i = \frac{exp(\beta_0 + \beta_1 x_i)}{1+\exp(\beta_0 + \beta_1 x_i)}.$$
+
+Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, valor de $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0=0$ e $\beta_1=0$.
+
+```{r}
+# xi
+##  [1] 2 2 2 0 0 1 3 1 2 2
+# yi
+##  [1] 1 0 1 0 0 0 0 0 1 0
+```
+
+<!-- -->
+
+3.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método Nelder-Mead usando as opções default da função optim() em R.
+
+$$L = \sum_{i=1}^n |y_i - \mu_i|, \quad \text{onde} \quad \mu_i = \beta_0 + \beta_1 x_i.$$
+
+Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$ é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, valor de $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0=0$ e $\beta_1=0$.
+
+```{r}
+# xi
+##  [1] 2 2 1 6 3 1 1 1 0 0
+# yi
+##  [1] -0.494  1.752 -0.444  2.331  0.310 -0.030 -1.452  0.658 -0.415 -1.806 
+```
+
+<!-- -->
+
+### Método da Quadratura Gaussiana (5x) ----------------------------------------------------------------------------------------------
+
+1.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 20 pontos de integração. Na equação o valor de $\lambda$ é igual a 0.172. Sua resposta é um número. Use três casas decimais.\
+    $$\int_{-\infty}^{\infty} \lambda\exp(-|x-\lambda|)dx$$
+
+```{r}
+
+```
+
+<!-- -->
+
+2.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 18 pontos de integração. Na equação o valor de $\lambda$ é igual a 9. Sua resposta é um número. Use três casas decimais.
+
+$$\int_{0}^{\infty} \lambda \frac{\exp^{-\sqrt{x}} }{\sqrt{x}}dx$$
+
+```{r}
+
+```
+
+<!-- -->
+
+3.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 21 pontos de integração. Na equação o valor de $\lambda$ é igual a 0.091. Sua resposta é um número. Use três casas decimais.
+
+$$\int_{-\infty}^{\infty} \lambda \exp(- (x - \lambda)^2) dx$$
+
+```{r}
+
+```
+
+<!-- -->
+
+4.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 25 pontos de integração. Na equação o valor de $\lambda$ é igual a 0.055. Sua resposta é um número. Use três casas decimais.
+
+$$\int_{-\infty}^{\infty} \lambda \exp(- (x - \lambda)^2) dx$$
+
+```{r}
+
+```
+
+<!-- -->
+
+5.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 22 pontos de integração. Na equação o valor de $\lambda$ é igual a 16. Sua resposta é um número. Use três casas decimais. $$\int_{0}^{\infty} \lambda \frac{\exp^{-\sqrt{x}} }{\sqrt{x}}dx$$
+
+```{r}
+
+```
+
+### Método de Bisseção (1x) ----------------------------------------------------------------------------------------------
+
+1.  Determine a raiz positiva do polinômio $f(x)=x^3-2.2x^2-2.15x+5.1$ usando o método da bisseção. A escolha do intervalo de busca é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1}-x_i|<\epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A escolha do intervalo adequado é parte da questão. A sua resposta é o valor da raiz use três casas decimais se necessário.\
+
+```{r}
+# Função para Método de Bisseção
+bissecao <-function(fx,a,b,tol=1e-04,max_iter=100) {
+  fa <- fx(a);   fb<- fx(b); 
+  if(fa * fb > 0) stop("Solução não está no intervalo")
+  solucao <- c();  
+  sol <- (a + b) / 2; 
+  solucao[1] <- sol;
+  limites <- matrix(NA, ncol = 2, nrow = max_iter) #
+  for( i in 1 : max_iter) {
+    test<-fx(a)*fx(sol)
+    if(test < 0) {
+      solucao[i + 1] <- (a + sol) / 2
+      b = sol 
+    }
+    if(test > 0) {
+      solucao[i+1] <- (b + sol) / 2
+      a=sol 
+    }
+    if(abs( (b-a)/2) < tol) break
+    sol=solucao[i+1]
+    limites[i,]<-c(a,b) 
+  }
+  out <-list("Tentativas" = solucao, "Limites"=limites, "Raiz"=solucao[i+1])
+  return(out)
+}
+
+# Função a ser calculada
+f <- function(x) {
+  dd <- x^3 - 2.2*x^2 - 2.15*x + 5.1
+  return(dd)  # Queremos obter o valor de theta para que 'theta - 3,84 = 0')
+}
+
+cat('\n','Se x=0, f(0) = 5.1   ->    f(0) maior que zero','\n')
+f(0)
+
+cat('\n','Se x=1, f(1) = 1.75, ainda maior que zero','\n')
+f(1)
+
+cat('\n','x=2 igual a zero, ou seja, encontramos a raíz exata',
+  '\n','podemos escolher x = [1.5, 2.5] para aplicar o método de bisseção','\n')
+options(scipen=999) # desabilitar notação cientifica
+f(2)
+
+set.seed(123) 
+y <- rexp(20, rate=1) 
+theta.hat <- 1/mean(y)
+ic_min <- bissecao(fx=f, a=0, b=theta.hat, tol=0.0001)
+ic_max <- bissecao(fx=f, a=theta.hat, b=3, tol=0.0001)
+c(ic_min$Raiz,ic_max$Raiz)
+
+```
+
+<!-- -->
+
+### Método do Gradiente Conjugado (1x) ----------------------------------------------------------------------------------------------
+
+1.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método Gradiente Conjugado (CG) usando as opções default da função optim() em R.\
+    $$L=\sum_{i = 1}^{n}(y_i-\mu_i)^2,\quad\text{onde}\quad\mu_i=\beta_0+\beta_1x_i$$ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$ é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, o valor de $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0=0$ e $\beta_1=0$.
+
+```{r}
+# xi
+##  [1] 2 7 0 6 3 2 1 2 1 2
+# yi
+##  [1]  0.918  2.047 -2.748  3.770 -1.877  0.573  0.517 -0.631 -0.056  0.439
+```
+
+<!-- -->
+
+### Método de Simulação (2x) ----------------------------------------------------------------------------------------------
+
+1.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em simulação. A escolha do método adequado é parte da questão. Use 975 pontos de integração. Na equação o valor de $\kappa$ é igual a 2. Como este método é baseado em simulação antes de usá-lo fixe a semente em 123 usando o comando set.seed(123). $$\begin{aligned}\int_{\infty}^{\infty}\frac{1}{\kappa+\kappa^-1}exp(\frac{-x}{k})dx\end{aligned}$$
+
+```{r}
+
+```
+
+<!-- -->
+
+2.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em simulação. A escolha do método adequado é parte da questão. Use 1050 pontos de integração. Na equação o valor de $\mu$ é igual a -0.041. Como este método é baseado em simulação antes de usá-lo fixe a semente em 123 usando o comando set.seed(123). $$\int_{\infty}^{\infty}\frac{1}{2}exp(-|x-\mu|)dx$$
+
+```{r}
+
+```
+
+<!-- -->
+
+### Método de Diferença Finita (1x) ----------------------------------------------------------------------------------------------
+
+1.  Obtenha a derivada numérica usando o método de diferença finita progressiva com dois pontos da função\
+    $$f(x)=log(cox(x))$$ e avalie no ponto $x=5$. A sua resposta é um número. Use três casas decimais se necessário. Use $h=0.01$.
+
+```{r}
+
+```
+
+<!-- -->
+
+### Método de Gauss-Legendre (4x) ----------------------------------------------------------------------------------------------
+
+1.  Resolva a seguinte integral usando o método de Gauss-Legendre. Use 21 pontos de integração e considere o limite inferior de integração ($\alpha= 0.1$) e o limite superior de integração ($\beta= 10.1$). Na Equação considere os valores de $\lambda$ igual a 12 e $\kappa$ igual a 5. Sua resposta é um número. Use três casas decimais. $$\int_{a}^{b} \frac{k}{\lambda} \left( \frac{y}{\lambda} \right)^{k-1} \exp^{-(y/\lambda)^k} dy.$$
+
+```{r}
+
+f <- function(y, lambda, k) {
+  (k / lambda) * (y / lambda)^(k - 1) * exp(-(y / lambda)^k)
+}
+
+alpha <- 0.1
+beta <- 10.1
+lambda <- 12
+k <- 5
+n <- 21
+
+# install.packages('pracma')
+library(pracma)
+gauss_legendre <-function(integrando,n.pontos,a, b, ...){
+  pontos<-gaussLegendre(n.pontos,a=a,b=b)
+  integral<-sum(pontos$w*integrando(pontos$x,...))
+  return(integral)
+}
+
+resposta <- gauss_legendre(integrando = f, n.pontos=n, a=alpha, b=beta, k=k, lambda=lambda)
+
+cat('\n','Resposta:','\n')
+sprintf('%.3f',resposta)
+```
+
+<!-- -->
+
+2.  Resolva a seguinte integral usando o método de Gauss-Legendre. Use 15 pontos de integração e considere o limite inferior de integração ($\alpha= 0.1$) e o limite superior de integração ($\beta= 8.1$). Na Equação considere os valores de $\alpha$ igual a 2 e $\beta$ igual a 3. Sua resposta é um número. Use três casas decimais.
+
+$$\int_{a}^b \frac{\beta^{\alpha} y^{\alpha - 1} \exp^{(-\beta y)} }{\Gamma(\alpha)}dy.$$
+
+```{r}
+
+```
+
+<!-- -->
+
+3.  Resolva a seguinte integral usando o método de Gauss-Legendre. Use 22 pontos de integração e considere o limite inferior de integração ($\alpha= 1.1$) e o limite superior de integração ($\beta= 8.1$). Na Equação considere os valores de $\alpha$ igual a 2 e $\beta$ igual a 1. Sua resposta é um número. Use três casas decimais.
+
+$$\int_{a}^b \frac{\beta^{\alpha} y^{\alpha - 1} \exp^{(-\beta y)} }{\Gamma(\alpha)}dy.$$
+
+```{r}
+
+```
+
+<!-- -->
+
+4.  Resolva a seguinte integral usando o método de Gauss-Legendre. Use 18 pontos de integração e considere o limite inferior de integração ($\alpha= 0.1$) e o limite superior de integração ($\beta= 8.1$). Na Equação considere os valores de $\lambda$ igual a 12 e $\kappa$ igual a 5. Sua resposta é um número. Use três casas decimais.
+
+$$\int_{a}^{b} \frac{k}{\lambda} \left( \frac{y}{\lambda} \right)^{k-1} \exp^{-(y/\lambda)^k} dy.$$
+
+```{r}
+
+```
+
+<!-- -->
+
+### Método do Simulating Annealing (1x) ----------------------------------------------------------------------------------------------
+
+1.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método Simulating Annealing (SANN) usando as opções default da função optim() em R.
+
+$$L = \sum_{i=1}^n \ln (\cosh(\mu_i - y_i)), \quad \text{onde} \quad \mu_i = \beta_0 + \beta_1 x_i.$$ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$ é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, valor de $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0 = 0$ e $\beta_1 = 0$. A função $cosh$ é o coseno hiperbólico disponível em R via a função cosh().
+
+```{r}
+# xi
+##  [1] 3 3 1 0 3 1 1 1 1 2
+# yi
+##  [1] -1.775 -0.426 -2.000 -1.446  0.850 -0.308 -0.284 -0.299  0.264  0.337
+
+x <- c(3,3,1,0,3,1,1,1,1,2)
+y <- c(-1.775,-0.426,-2.000,-1.446,0.850,-0.308,-0.284,-0.299,0.264,0.337)
+
+set.seed(123)
+f <- function(par){
+  b0 <- par[1]
+  b1 <- par[2]
+  mu <- b0 + b1*x
+  L <- sum(log(cosh(mu - y)))
+  return(L)
+}
+
+resultado <- optim(par=c(0,0), fn=f, method='SANN')
+
+cat('\n','Valor de beta0:','\n')
+sprintf('%.3f',resultado$par[1])
+
+cat('\n','Valor de beta1:','\n')
+sprintf('%.3f',resultado$par[2])
+
+cat('\n','Valor da Raiz:','\n')
+sprintf('%.3f',resultado$value)
+```
+
+<!-- -->
+
+### Método da Regula Falsi (2x) ----------------------------------------------------------------------------------------------
+
+1.  Determine a raiz negativa mais próxima da origem do polinômio $$f(x) = x^3 + 3.8 x^2 - 8.6x - 24.4$$ usando o método da regula falsi. A escolha do intervalo de busca é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_{i} | < \epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A escolha do intervalo adequado é parte da questão. A sua resposta é o valor da raiz use três casas decimais se necessário.
+
+```{r}
+f <- function(x){
+  x^3 + 3.8*x^2 - 8.6*x - 24.4
+}
+
+cat('\n','Existe uma raiz na função entre os pontos -3 e -1:','\n')
+cat('\n','Valor em f(-3):',f(-3))
+cat('\n','Valor em f(-2):',f(-2))
+cat('\n','Valor em f(-1):',f(-1))
+
+cat('\n','Logo, podemos definir um intervalo de a e b entre -3 e -1','\n')
+a = -3
+b = -1
+
+regula_falsi <-function(fx, a,b,tol=1e-04,max_iter= 100){
+  fa<-fx(a); fb<-fx(b); if(fa*fb> 0)stop("Solução não está no intervalo")
+  solucao<-c();sol<-(a*fx(b)-b*fx(a))/(fx(b)-fx(a))
+  solucao[1] <-sol; limites<-matrix(NA,ncol=2,nrow= max_iter)
+    for(i in 1:max_iter){
+      test<-fx(a)*fx(sol)
+      if(test < 0){
+        b=sol
+        solucao[i+1]<-(a*fx(b)-b*fx(a))/(fx(b)-fx(a))
+      }
+      if(test > 0){
+        a=sol
+        solucao[i+1]<-sol<-(a*fx(b)-b*fx(a))/(fx(b)-fx(a))
+      }
+      if(abs(solucao[i+1]-solucao[i])<tol)break
+      sol=solucao[i+1]
+      limites[i,]<-c(a,b) 
+    }
+    out <-list("Tentativas" = solucao,"Limites"=limites, "Raiz"=sol)
+    return(out)
+}
+
+cat('\n','Raiz encontrada:','\n')
+raiz_negativa  <-regula_falsi(fx=f,a=a,b=b, tol=0.0001)
+sprintf('%.3f',raiz_negativa$Raiz)
+```
+
+<!-- -->
+
+2.  Determine a raiz cúbica de $300$ obtendo a solução numérica da equação $f(x) = x^3 - 300 = 0$ usando o método da regula falsi. Use tolerância de $0.0001$. A escolha do intervalo adequado é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_{i} | < \epsilon$, onde $\epsilon$ é o erro tolerado. A sua resposta é o valor da raiz use três casas decimais se necessário.
+
+```{r}
+f <- function(x){
+  x^3 -300
+}
+
+cat('\n','Existe uma raiz na função entre os pontos 6 e 7:','\n')
+cat('\n','Valor em f(7):',f(7))
+cat('\n','Valor em f(6):',f(6))
+
+cat('\n','Logo, podemos definir um intervalo de a e b entre 6 e 7','\n')
+a = 6
+b = 7
+
+regula_falsi <-function(fx, a,b,tol=1e-04,max_iter= 100){
+  fa<-fx(a); fb<-fx(b); if(fa*fb> 0)stop("Solução não está no intervalo")
+  solucao<-c();sol<-(a*fx(b)-b*fx(a))/(fx(b)-fx(a))
+  solucao[1] <-sol; limites<-matrix(NA,ncol=2,nrow= max_iter)
+    for(i in 1:max_iter){
+      test<-fx(a)*fx(sol)
+      if(test < 0){
+        b=sol
+        solucao[i+1]<-(a*fx(b)-b*fx(a))/(fx(b)-fx(a))
+      }
+      if(test > 0){
+        a=sol
+        solucao[i+1]<-sol<-(a*fx(b)-b*fx(a))/(fx(b)-fx(a))
+      }
+      if(abs(solucao[i+1]-solucao[i])<tol)break
+      sol=solucao[i+1]
+      limites[i,]<-c(a,b) 
+    }
+    out <-list("Tentativas" = solucao,"Limites"=limites, "Raiz"=sol)
+    return(out)
+}
+
+cat('\n','Raiz encontrada:','\n')
+raiz_negativa  <-regula_falsi(fx=f,a=a,b=b, tol=0.0001)
+sprintf('%.3f',raiz_negativa$Raiz)
+```
+
+<!-- -->
+
+### Método BFGS (1x) ----------------------------------------------------------------------------------------------
+
+1.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método BFGS usando as opções default da função optim() em R. $$L = \sum_{i=1}^n |y_i - \mu_i|, \quad \text{onde} \quad \mu_i = \beta_0 + \beta_1 x_i.$$ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$ é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0=0$ e $\beta_1=0$.
+
+```{r}
+# xi
+##  [1] 3 1 2 2 4 1 2 0 1 2
+# yi
+##  [1]  0.778 -1.686 -0.836  0.510  0.667 -0.566 -0.115 -1.651 -2.519  0.349
+
+cat('\n','Valores de x e y:','\n')
+x <- c(3,1,2,2,4,1,2,0,1,2)
+y <- c(0.778,-1.686,-0.836,0.510,0.667,-0.566,-0.115,-1.651,-2.519,0.349)
+x
+y
+
+f <- function(par){
+  beta0 <- par[1]
+  beta1 <- par[2]
+  mu <- beta0 + beta1*x
+  sum(abs(y-mu))
+}
+
+res <-optim(par=c(0,0),fn=f,method= c("BFGS"))
+
+cat('\n','Valor de beta0:','\n')
+sprintf('%.3f',res$par[1])
+
+cat('\n','Valor de beta1:','\n')
+sprintf('%.3f',res$par[2])
+
+cat('\n','Valor da função objetivo no ponto ótimo:','\n')
+sprintf('%.3f',res$value)
+```
+
+<!-- -->
+
+### Diferença Finita Central (2x) ----------------------------------------------------------------------------------------------
+
+1.  Obtenha a derivada numérica de segunda ordem usando o método de diferença finita central com três pontos da função $$f(x) = x^2 sin(5x)$$
+
+e avalie no ponto $x = 1$. A sua resposta é um número. Use três casas decimais se necessário. Use $h = 0.001$.
+
+```{r}
+dif_cen_segunda <- function(fx, x, h) {
+  df2 <- (fx(x + h) - 2*fx(x) + fx(x - h)) / h^2
+  return(df2)
+}
+
+f <- function(x) {
+  x^2 * sin(5*x)
+}
+
+x <- 1
+h <- 0.001
+
+dif_cen_segunda(f, x, h)
+round(dif_cen_segunda(f, x, h), 3)
+```
+
+<!-- -->
+
+2.  Obtenha a derivada numérica de segunda ordem usando o método de diferença finita central com três pontos da função $$f(x) = x^2 exp(x) tan(x)$$
+
+e avalie no ponto $x = 1$. A sua resposta é um número. Use três casas decimais se necessário. Use $h = 0.001$.
+
+```{r}
+dif_cen_segunda <- function(fx, x, h) {
+  df2 <- (fx(x + h) - 2*fx(x) + fx(x - h)) / h^2
+  return(df2)
+}
+
+f <- function(x) {
+  x^2 * exp(x) * tan(x)
+}
+
+x <- 1
+h <- 0.001
+
+cat('\n','Resultado:','\n')
+resultado <- dif_cen_segunda(f, x, h)
+resultado
+round(resultado, 3)
+
+
+cat('\n','Conferência dos resultados:','\n')
+f_expr <- expression(x^2 * exp(x) * tan(x))
+
+fd1 <- D(f_expr, "x")
+fd2 <- D(fd1, "x")
+
+x <- 1
+valor_exato <- eval(fd2)
+
+round(valor_exato, 3)
+```
+
+<!-- -->
+
+### Método do Gradiente Descendente (1x) ----------------------------------------------------------------------------------------------
+
+1.  Determine a raiz a esquerda do ponto crítico da equação: $$f(\mu, y_i) =  -\left( \sum_{i=1}^n   \frac{(y_i - \mu)^2}{\mu^2 y_i}\right) + 5.$$
+
+usando o método do gradiente descendente. A escolha de valor inicial e do parâmetro de tuning é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_{i} | < \epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A sua resposta é o valor da raiz use três casas decimais se necessário. Na equação os valores para $y_i$ são dados abaixo.
+
+```{r}
+# y
+##  [1] 10.179 10.073 10.505 10.022 10.041 10.557 10.147 10.408  9.785  9.860
+
+# Instalando pacote necessário 
+#install.packages("numDeriv")
+library(numDeriv)
+
+# Lista de y fornecidos
+y <- c(10.179, 10.073, 10.505, 10.022, 10.041, 10.557, 10.147, 10.408, 9.785, 9.860)
+
+
+# Função de gradiente descendente criado pelo prof (Ver Livro Tópicos)
+grad_desc <- function(inicial, funcao, gradiente = NULL, alpha, 
+                      tol = 1e-05, max_iter = 100, ...) {
+  ## Cria uma função para avaliar o gradiente caso o usuário não forneça
+  if(is.null(gradiente)) {
+    gradiente <- function(ponto, ...) {
+      numDeriv::grad(func = funcao, x = ponto, method = "simple", ...)
+    }
+  }
+  ## Objetos para guardar a solução
+  solucao <- matrix(NA, ncol = length(inicial), nrow = max_iter)
+  solucao[1,] <- inicial
+  for(i in 1:c(max_iter-1)) {
+    solucao[i+1,] <- solucao[i,] - alpha*gradiente(ponto = solucao[i,], ...)
+    if( sum(abs(solucao[i+1,] - solucao[i,])) < tol) break
+  }
+  out <- list("Iterações" = solucao, "Solução" = solucao[c(i+1),])
+  return(out)
+}
+
+f <- function(mu) {
+  -sum((y - mu)^2 / (mu^2 * y)) + 5
+}
+
+g <- function(mu) {
+  f(mu)^2
+}
+
+cat('\n','Resultado','\n')
+resultado <- grad_desc(
+  inicial = 2,
+  funcao = g,
+  alpha = 0.005,
+  tol = 0.0001,
+  max_iter = 10000
+)
+
+resultado$Solução
+round(resultado$Solução, 3)
+```
