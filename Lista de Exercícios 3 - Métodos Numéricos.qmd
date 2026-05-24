@@ -642,7 +642,7 @@ c(ic_min$Raiz,ic_max$Raiz)
 ### Método do Gradiente Conjugado (1x) ----------------------------------------------------------------------------------------------
 
 1.  Encontre os valores de $\beta_0$ e $\beta_1$ que otimizam a seguinte função (descobrir se é um problema de maximização ou minimização é parte da questão). Utilize o método Gradiente Conjugado (CG) usando as opções default da função optim() em R.\
-    $$L=\sum_{i = 1}^{n}(y_i-\mu_i)^2,\quad\text{onde}\quad\mu_i=\beta_0+\beta_1x_i$$\
+$$L=\sum_{i = 1}^{n}(y_i-\mu_i)^2,\quad\text{onde}\quad\mu_i=\beta_0+\beta_1x_i$$\
 Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$ é o número de observações. Neste exercício $n=10$. Sua resposta são três valores: valor de $\beta_0$, o valor de $\beta_1$ e valor da função objetivo no ponto ótimo. Use três casas decimais. Use como valores iniciais $\beta_0=0$ e $\beta_1=0$.
 
 ```{r}
@@ -650,6 +650,28 @@ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$
 ##  [1] 2 7 0 6 3 2 1 2 1 2
 # yi
 ##  [1]  0.918  2.047 -2.748  3.770 -1.877  0.573  0.517 -0.631 -0.056  0.439
+
+x <- c(2,7,0,6,3,2,1,2,1,2)
+y <- c(0.918,2.047,-2.748,3.770,-1.877,0.573,0.517,-0.631,-0.056,0.439)
+
+n <- 10
+b0 <- 0
+b1 <- 0
+
+fx <- function(par) {
+  b0 <- par[1]
+  b1 <- par[2]
+  mu <- b0 + b1*x
+  L <- sum((y - mu)^2)
+  return(L)
+}
+
+
+res <-optim(par=c(0,0),fn=fx,method= c("CG"))
+cat('\n','Valor de beta0:',sprintf('%.3f',res$par[1]))
+cat('\n','Valor de beta1:',sprintf('%.3f',res$par[2]))
+cat('\n','Valor do valor no ponto ótimo:',sprintf('%.3f',res$value))
+
 ```
 
 <!-- -->
