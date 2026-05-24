@@ -719,7 +719,7 @@ sprintf('%.3f',resposta)
 $$\int_{a}^b \frac{\beta^{\alpha} y^{\alpha - 1} \exp^{(-\beta y)} }{\Gamma(\alpha)}dy.$$
 
 ```{r}
-
+teste
 ```
 
 <!-- -->
