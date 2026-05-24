@@ -751,9 +751,6 @@ sprintf('%.3f',resposta)
 $$\int_{a}^b \frac{\beta^{\alpha} y^{\alpha - 1} \exp^{(-\beta y)} }{\Gamma(\alpha)}dy.$$
 
 ```{r}
-<<<<<<< HEAD
-teste
-=======
 f <- function(y, alpha, beta) {
   (beta^alpha * y^(alpha-1) * exp(-beta*y)) / gamma(alpha)
 }
@@ -776,7 +773,6 @@ resposta <- gauss_legendre(integrando = f, n.pontos=n, alpha=alpha, beta=beta, a
 
 cat('\n','Resposta:','\n')
 sprintf('%.3f',resposta)
->>>>>>> a008969ea7ee0a48dae2082f2d2db78b0c00d28b
 ```
 
 <!-- -->
