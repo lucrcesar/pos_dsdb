@@ -27,7 +27,9 @@ editor: visual
     Sugiro que todo mundo verifique se tem exercícios novos, e se sim, adicione eles nos tópicos abaixo.\
     Assim, podemos ir reunindo e respondendo todos os exercícios possíveis.\
 5.  A numeração dos exercícios está de acordo com a ordem que fui anotando. Basta incrementa-los na sequência em que forem adicionados outros novos.\
-6. Para encontrar um exercício que já exista aqui, só usar um CTRL+F e colar parte do cabeçalho
+6.  Para encontrar um exercício que já exista aqui, só usar um CTRL+F e colar parte do cabeçalho\
+7. Lembrem-se de clicar em 'Fetch Origin' no Github Desktop (ou o equivalente via comandos no terminal, bash ou cmd)\
+   Senão, vcs podem estar mexendo em uma versão desatualizada do script dentro do git.\
 
 ------------------------------------------------------------------------
 
