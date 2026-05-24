@@ -539,6 +539,21 @@ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$
     $$\int_{-\infty}^{\infty} \lambda\exp(-|x-\lambda|)dx$$
 
 ```{r}
+f <- function(t, lambda) {
+  2 * lambda * exp(-t)
+}
+
+lambda <- 0.172
+n <- 20
+
+gauss_laguerre <- function(integrando, n.pontos, ...){
+  pontos <- gaussLaguerre(n.pontos)
+  integral <- sum(pontos$w*integrando(pontos$x,...)
+                  /exp(-pontos$x))
+  return(integral)
+}
+
+gauss_laguerre(integrando=f, n.pontos=n, lambda=lambda)
 
 ```
 
@@ -549,7 +564,21 @@ Como valores para $y_i$ e $x_i$ considere os seguintes valores. Na notação $n$
 $$\int_{0}^{\infty} \lambda \frac{\exp^{-\sqrt{x}} }{\sqrt{x}}dx$$
 
 ```{r}
+f <- function(t, lambda) {
+  2 * lambda * exp(-t)
+}
 
+lambda <- 9
+n <- 18
+
+gauss_laguerre <- function(integrando, n.pontos, ...){
+  pontos <- gaussLaguerre(n.pontos)
+  integral <- sum(pontos$w*integrando(pontos$x,...)
+                  /exp(-pontos$x))
+  return(integral)
+}
+
+gauss_laguerre(integrando=f, n.pontos=n, lambda=lambda)
 ```
 
 <!-- -->
@@ -559,7 +588,21 @@ $$\int_{0}^{\infty} \lambda \frac{\exp^{-\sqrt{x}} }{\sqrt{x}}dx$$
 $$\int_{-\infty}^{\infty} \lambda \exp(- (x - \lambda)^2) dx$$
 
 ```{r}
+f <- function(t,lambda) {
+  lambda
+}
 
+lambda <- 0.091
+n <- 21
+
+gauss_hermite <- function(integrando, n.pontos, ...){
+  pontos <- gaussHermite(n.pontos)
+  integral <- sum(pontos$w*integrando(pontos$x,...))
+                  #/exp(-pontos$x^2))
+  return(integral)
+}
+
+gauss_hermite(integrando=f, n.pontos=n, lambda=lambda)
 ```
 
 <!-- -->
@@ -569,15 +612,44 @@ $$\int_{-\infty}^{\infty} \lambda \exp(- (x - \lambda)^2) dx$$
 $$\int_{-\infty}^{\infty} \lambda \exp(- (x - \lambda)^2) dx$$
 
 ```{r}
+f <- function(t,lambda) {
+  lambda
+}
 
+lambda <- 0.055
+n <- 25
+
+gauss_hermite <- function(integrando, n.pontos, ...){
+  pontos <- gaussHermite(n.pontos)
+  integral <- sum(pontos$w*integrando(pontos$x,...))
+                  #/exp(-pontos$x^2))
+  return(integral)
+}
+
+gauss_hermite(integrando=f, n.pontos=n, lambda=lambda)
 ```
 
 <!-- -->
 
-5.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 22 pontos de integração. Na equação o valor de $\lambda$ é igual a 16. Sua resposta é um número. Use três casas decimais. $$\int_{0}^{\infty} \lambda \frac{\exp^{-\sqrt{x}} }{\sqrt{x}}dx$$
+5.  Resolva a seguinte integral usando algum método da classe dos métodos baseados em quadratura Gaussiana. A escolha do método adequado é parte da questão. Use 22 pontos de integração. Na equação o valor de $\lambda$ é igual a 16. Sua resposta é um número. Use três casas decimais.\
+$$\int_{0}^{\infty} \lambda \frac{\exp^{-\sqrt{x}} }{\sqrt{x}}dx$$
 
 ```{r}
+f <- function(t, lambda) {
+  2 * lambda * exp(-t)
+}
 
+lambda <- 16
+n <- 22
+
+gauss_laguerre <- function(integrando, n.pontos, ...){
+  pontos <- gaussLaguerre(n.pontos)
+  integral <- sum(pontos$w*integrando(pontos$x,...)
+                  /exp(-pontos$x))
+  return(integral)
+}
+
+gauss_laguerre(integrando=f, n.pontos=n, lambda=lambda)
 ```
 
 ### Método de Bisseção (1x) ----------------------------------------------------------------------------------------------
