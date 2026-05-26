@@ -1,0 +1,612 @@
+---
+title: "Métodos Numéricos - JANIS"
+author: "Janis"
+format: html
+editor: visual
+---
+
+# MÉTODOS NUMÉRICOS
+
+### Sistemas de Equações não-lineares
+
+f(x) = 0 é o ponto onde f(x) toca o eixo x.
+
+Em muitoas situações é impossível tererminar a raiz analiticamente.
+
+Para resolver essas equações utilizamos métodos numéricos, que podem ser divididos em dois grupos: Métodos de confinamento e Métodos Abertos.
+
+Nos Métodos de confinamento identificamos um intervalo que possui solução e, usando um esquema numérico, reduzimos o tamanho do intervalo até a precisão desejada.
+
+Nos Métodos Abertos, assumimos uma estimativa inicial e aproximamos esse valor da solução. Usando esquemas numéricos a solução é melhorada até que a precisão desejada seja atingida.
+
+### Métodos de confinamento:
+
+### Método de Bisseção \[1x\]
+
+Sabe-se que dentro de um intervalo \[a,b\], tal que $f(a)*f(b)<0$, calcule a primeira tentativa entre a e $xns$ usando $xns= a+b/2$. Determine se a solução exata está entre a e xns ou entre xns e b. Isso é feito verificando o sinal do produto $f(a)*f(xns)$. Se $f(a)*f(xns) < 0,$ a solução está entre a e $xns$. Se $f(a)*f(xns) > 0$, a solução está entre $xns$ e b.
+
+14. Determine a raiz positiva do polinômio $f(x)=x^3-2.2x^2-2.15x+5.1$ usando o método da bisseção. A escolha do intervalo de busca é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1}-x_i|<\epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A escolha do intervalo adequado é parte da questão. A sua resposta é o valor da raiz use três casas decimais se necessário.
+
+    ```{r}
+    #função bissecao recebe fx, a e b
+    bissecao <- function(fx, a, b, tol = 1e-04, max_iter = 100){
+      #fa recebe fx(a); fb recebe fx(b) e se a fa*fb for maior que 0, a solução não está no intervalo, a função para
+      fa <- fx(a)
+      fb <-fx(b)
+      if(fa*fb > 0) stop("Solução não está no intervalo")
+      
+      #solução recebe um vetor vazio, sol recebe a+b/2 (calculo usado para determinar se sol está entre a e xns ou b e xns), sol é guardada no vetor solução
+      sol <-(a+b)/2
+      solucao <- numeric(max_iter+1)
+      solucao[1]<- sol;
+      
+      limites <- matrix(NA, ncol = 2, nrow = max_iter)
+      
+      for(i in 1:max_iter) {
+        #em cada iteração calcula fx(a)*fx(sol) e checa se é maior ou menos que 0
+        test <- fx(a)*fx(sol)
+        if(test < 0) {
+          #se menor que 0, então solução entre xns e a, recalcula usando a
+          solucao[i+1] <- (a + sol)/2
+          b <- sol
+        } 
+        #se maior que 0, a solucao esta entre xns e b, recalculamos usando b
+        if(test > 0){
+          solucao[i+1] <- (b + sol)/2
+          a <- sol
+        }
+        #se estamos abaixo da tolerância, break
+        if(abs((b-a)/2) < tol) break 
+        sol <- solucao[i+1]
+        limites[i,] <- c(a,b)
+      }
+      out<- list("tentativas" = solucao, "Limites" = limites, "Raiz" = solucao[i+1])
+      return(out)
+    }
+    fx <- function(x)x^3 - 2.2*x^2 - 2.15*x + 5.1
+    bissecao(fx, 1.5, 1.8)
+    ```
+
+13. Encontre a raiz da equação $f(x) = x² - exp^-x$ usando o método da bisseção. Use a tolerância de $0.0001$ e como intervalo inicial a=0 e b=1. Como critério de parada utilize ao erro estimado, ou seja $|xi+1 - xi| < e$, onde e é o erro tolerado. A sua resposta é o valor da raiz use três casas decimais se necessário.![](images/clipboard-4002188600.png)
+
+```{r}
+#função bissecao recebe fx, a e b
+bissecao <- function(fx, a, b, tol = 1e-04, max_iter = 100){
+  #fa recebe fx(a); fb recebe fx(b) e se a fa*fb for maior que 0, a solução não está no intervalo, a função para
+  fa <- fx(a)
+  fb <-fx(b)
+  if(fa*fb > 0) stop("Solução não está no intervalo")
+  
+  #solução recebe um vetor vazio, sol recebe a+b/2 (calculo usado para determinar se sol está entre a e xns ou b e xns), sol é guardada no vetor solução
+  sol <-(a+b)/2
+  solucao <- numeric(max_iter+1)
+  solucao[1]<- sol;
+  
+  limites <- matrix(NA, ncol = 2, nrow = max_iter)
+  
+  for(i in 1:max_iter) {
+    #em cada iteração calcula fx(a)*fx(sol) e checa se é maior ou menos que 0
+    test <- fx(a)*fx(sol)
+    if(test < 0) {
+      #se menor que 0, então solução entre xns e a, recalcula usando a
+      solucao[i+1] <- (a + sol)/2
+      b <- sol
+    } 
+    #se maior que 0, a solucao esta entre xns e b, recalculamos usando b
+    if(test > 0){
+      solucao[i+1] <- (b + sol)/2
+      a <- sol
+    }
+    #se estamos abaixo da tolerância, break
+    if(abs((b-a)/2) < tol) break 
+    sol <- solucao[i+1]
+    limites[i,] <- c(a,b)
+  }
+  out<- list("tentativas" = solucao, "Limites" = limites, "Raiz" = solucao[i+1])
+  return(out)
+}
+fx <- function(x)x^2 - exp(-x)
+bissecao(fx, 0, 1)
+
+
+
+```
+
+32. Determine a raiz cúbica de 155 obtendo a solução numérica da equação $f(x) = x^3 -155 =0$. Use tolerância de 0,0001. A escolha do intervalo adequado é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|xi+1 - xi| <e$ , onde $e$ é o erro tolerado. A sua resposta é o valor da raiz use três casas decimais se necessário.
+
+```{r}
+#função bissecao recebe fx, a e b
+bissecao <- function(fx, a, b, tol = 1e-04, max_iter = 100){
+  #fa recebe fx(a); fb recebe fx(b) e se a fa*fb for maior que 0, a solução não está no intervalo, a função para
+  fa <- fx(a)
+  fb <-fx(b)
+  if(fa*fb > 0) stop("Solução não está no intervalo")
+  
+  #solução recebe um vetor vazio, sol recebe a+b/2 (calculo usado para determinar se sol está entre a e xns ou b e xns), sol é guardada no vetor solução
+  sol <-(a+b)/2
+  solucao <- numeric(max_iter+1)
+  solucao[1]<- sol;
+  
+  limites <- matrix(NA, ncol = 2, nrow = max_iter)
+  
+  for(i in 1:max_iter) {
+    #em cada iteração calcula fx(a)*fx(sol) e checa se é maior ou menos que 0
+    test <- fx(a)*fx(sol)
+    if(test < 0) {
+      #se menor que 0, então solução entre xns e a, recalcula usando a
+      solucao[i+1] <- (a + sol)/2
+      b <- sol
+    } 
+    #se maior que 0, a solucao esta entre xns e b, recalculamos usando b
+    if(test > 0){
+      solucao[i+1] <- (b + sol)/2
+      a <- sol
+    }
+    #se estamos abaixo da tolerância, break
+    if(abs((b-a)/2) < tol) break 
+    sol <- solucao[i+1]
+    limites[i,] <- c(a,b)
+  }
+  out<- list("tentativas" = solucao, "Limites" = limites, "Raiz" = solucao[i+1])
+  return(out)
+}
+fx <- function(x)x^3 - 155
+bissecao(fx, 5,6)
+
+
+```
+
+### Método da Regula Falsi \[2x\]
+
+Sabe-se que dentro de um intervalo $[a,b]$. $f(x)$ é contínua e possui uma solução. No método regula falsi deve-se encontrar os pontos a e b entre os quais existe uma solução (como se sabe o valor desses pontos?).
+
+Calcula-se, então, a primeira estimativa: $x^(i) = af(b)-bf(a)/f(b)-f(a)$. Determina-se se a solução está entre a e $x^(i)$ ou entre $x^(i)$ e b.
+
+Se $f(a)f(x^(i))<0$, a solução está entre a e $x^(i)$, caso contrario está entre $x^(i)$ e b.
+
+Selecione o subintervalo que contém a solução como novo intervalo \[a,b\] e volte ao passo 2. Repita o passo 2 a 4 até a convergência.
+
+40. Determine a raiz negativa mais próxima da origem do polinômio $f(x) = x^3 + 3.8 x^2 - 8.6x - 24.4$ usando o método da regula falsi. A escolha do intervalo de busca é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_{i} | < \epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A escolha do intervalo adequado é parte da questão. A sua resposta é o valor da raiz use três casas decimais se necessário.
+
+```{r}
+  #funçao regula falsi recebe a função fx, a e b, tem toleância  de 0.0001 e um maximo de iterações de 100
+regula_falsi <- function(fx, a, b, tol = 1e-04, max_iter = 100) {
+  
+  #fa recebe a função fx rodada em a, fb recebe fx rodado em b e se fa*fb>0 a função para pois a solução não está no intervalo
+  fa <- fx(a)
+  fb <- fx(b)
+  
+  if(fa*fb > 0) stop("Solução não está no intervalo")
+  
+  #cria-se o vetor solução, cria-se sol, que recebe a primeria estimativa segundo a formula acima
+  solucao <- c()
+  sol <- (a*fx(b) - b*fx(a))/(fx(b) - fx(a))
+  
+  #o vetor solução guarda a primeira sol na primeira casa e a matriz limite é criada
+  solucao[1] <- sol
+  limites <- matrix(NA, ncol = 2, nrow = max_iter)
+  
+  #loop de iterações até 100
+  for(i in 1:max_iter) {
+    
+    #testa-se o valor de fx(a) * fx(sol)
+    #se menor que zero, a solução está entre a e x(i), senão está entre x(i) e b
+    test <- fx(a)*fx(sol)
+    
+    if(test < 0) {
+      #b recebe o valor da solução atual
+      b = sol
+      #anexa-se a nova solução no vetor usando a mesma formula
+      solucao[i+1] <- (a*fx(b) - b*fx(a))/(fx(b) - fx(a)) 
+      }
+    if(test > 0) {
+      #a recebe solução
+      a = sol
+      #anexa-se ao vetor a nova solução usando a mesma formula
+      solucao[i+1] <- sol <- (a*fx(b) - b*fx(a))/(fx(b) - fx(a)) 
+    }
+    #condição de parada
+    if( abs(solucao[i+1] - solucao[i]) < tol) break
+    
+    #sol recebe a solução dessa iteração +1 (fica vazia?)
+    sol = solucao[i+1]
+    #limite recebe um vetor com o valor atual de a e b
+    limites[i,] <- c(a,b) 
+  }
+  out <- list("Tentativas" = solucao, "Limites" = limites, "Raiz" = sol)
+  #retorna as tentativas, os limites e a raiz
+  return(out)
+  }
+
+funcao_ab = function(fx, inicio=0, fim=-5, passo=-0.5){
+  valores <- seq(inicio, fim, by=passo)
+  for(i in 1:(length(valores)-1)){
+  a <- valores[i+1]
+  b <- valores[i]
+  fa <- fx(a)
+  fb <- fx(b)
+  
+  if (fa*fb<=0){
+    
+    if(abs(fa) < 1e12) a <- a - 0.1
+    if(abs(fb) < 1e12) b <- b + 0.1
+    cat("intervalor encontrado: [",a,",",b,"]\n")
+    return(c(a,b))
+  }
+  }
+  stop ("Nenhum intervalor com mudança de sinal encontrado. Ajuste 'fim' ou 'passo'.")
+}
+#para escolher o intervalor, calcular fx com um valor a e um b diferentes que deem um resultado positivo e um negativo
+## Resolvendo numericamente
+fx <- function(x) x^3 + 3.8*x^2 - 8.6*x - 24.4
+intervalo <- funcao_ab(fx)
+resultado <- regula_falsi(fx, intervalo[1], intervalo[2])
+print(round(resultado$Raiz, 3))
+```
+
+31. Encontre a raiz da equação $f(x) = -x^2 + exp ^ -x$ usando o método regula falsi. Use tolerância de 0.0001 a definição do intervalo de busca é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|xi+1-xi|$, onde é o erro tolerado. A sua resposta é o valor da raiz use três casas decimais se necessário.
+
+```{r}
+  #funçao regula falsi recebe a função fx, a e b, tem toleância  de 0.0001 e um maximo de iterações de 100
+regula_falsi <- function(fx, a, b, tol = 1e-04, max_iter = 100) {
+  
+  #fa recebe a função fx rodada em a, fb recebe fx rodado em b e se fa*fb>0 a função para pois a solução não está no intervalo
+  fa <- fx(a)
+  fb <- fx(b)
+  
+  if(fa*fb > 0) stop("Solução não está no intervalo")
+  
+  #cria-se o vetor solução, cria-se sol, que recebe a primeria estimativa segundo a formula acima
+  solucao <- c()
+  sol <- (a*fx(b) - b*fx(a))/(fx(b) - fx(a))
+  
+  #o vetor solução guarda a primeira sol na primeira casa e a matriz limite é criada
+  solucao[1] <- sol
+  limites <- matrix(NA, ncol = 2, nrow = max_iter)
+  
+  #loop de iterações até 100
+  for(i in 1:max_iter) {
+    
+    #testa-se o valor de fx(a) * fx(sol)
+    #se menor que zero, a solução está entre a e x(i), senão está entre x(i) e b
+    test <- fx(a)*fx(sol)
+    
+    if(test < 0) {
+      #b recebe o valor da solução atual
+      b = sol
+      #anexa-se a nova solução no vetor usando a mesma formula
+      solucao[i+1] <- (a*fx(b) - b*fx(a))/(fx(b) - fx(a)) 
+      }
+    if(test > 0) {
+      #a recebe solução
+      a = sol
+      #anexa-se ao vetor a nova solução usando a mesma formula
+      solucao[i+1] <- sol <- (a*fx(b) - b*fx(a))/(fx(b) - fx(a)) 
+    }
+    #condição de parada
+    if( abs(solucao[i+1] - solucao[i]) < tol) break
+    
+    #sol recebe a solução dessa iteração +1 (fica vazia?)
+    sol = solucao[i+1]
+    #limite recebe um vetor com o valor atual de a e b
+    limites[i,] <- c(a,b) 
+  }
+  out <- list("Tentativas" = solucao, "Limites" = limites, "Raiz" = sol)
+  #retorna as tentativas, os limites e a raiz
+  return(out)
+  }
+
+#para escolher o intervalor, calcular fx com um valor a e um b diferentes que deem um resultado positivo e um negativo
+## Resolvendo numericamente
+fx <- function(x) -x^2 + exp(-x)
+resultado <- regula_falsi(fx, 0, 1)
+print(round(resultado$Raiz, 3))
+```
+
+### Métodos de confinamento
+
+-   Métodos de confinamento sempre convergem para uma resposta, desde que a raiz esteja no intervalo.
+
+-   Podem falhar quando a função é tangente ao eixo x, não cruzam em f(x) = 0.
+
+-   A convergência é lenta em comparação com outros métodos. São difíceis de generalizar para sistemas de equações não-lineares.
+
+### Método de Newton \[3x\]
+
+-   A função deve ser contínua e diferenciável.
+
+-   A função deve possuir uma solução perto do ponto inicial.
+
+-   Escola um ponto x1 como inicial. Para i=1,2,... até que o erro seja menor que um valor especificado, calcule:
+
+$x^(i+1)= x^(i)-f(x^(i))/f'(x^(i))$
+
+14. {5} Resolva o seguinte sistema de equações não lineares usando o método de Newton.\
+    $$         \begin{aligned}     xy + y^2 -1 = 0 \\     xy^3 + x^2y^2 + 1 = 0\\     \end{aligned}$$\
+    A escolha de valor inicial é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_i| < \epsilon_i$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A sua resposta são as duas raízes $\hat{x}$ e $\hat{y}$. Use três casas decimais se necessário.
+
+15. {5} Determine a raiz direta do ponto crítico da equação
+
+  $$sum(2 * (y / mu - 1 + log(mu / y))) - 3.84$$
+
+  usando o método de Newton. A escola de valor inicial é parte da questão. Como critério utilize o erro estimado, ou seja, $|xi+1-xi|<e$ onde $e$ é o erro tolerado. use a tolerância de 0.0001. A sua resposta é o valor da raiz use três casas decimais se necessário. Considere os seguintes valores para y: [0.182, 1.696, 1.621, 2.448, 0.879, 2.667, 3.886, 0.964, 0.683, 0.033]
+
+```{r}
+# impossível
+```
+
+7. Determine a raiz a direita do ponto crítico da equação:
+
+sum((y_i - mu)**2 / (mu**2 * y_i) for y_i in y_dados)-(1/2)
+
+ Usando o método de Newton. A escolha de valor inicial é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1}-x_1|<\epsilon$ , onde $\epsilon$ é o erro tolerado. Use tolerância de 000.1. A sua resposta é o valor da raiz use três casas decimais se necessário. Considere os seguintes valores para y
+y = 10.179 10.073 10.505 10.022 10.041 10.557 10.147 10.408 9.785 9.860
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+from sympy import symbols, exp, diff, lambdify
+
+#função newton
+def Newton(f, df, x, epsilon, Iter):
+  #checa de f(x) é maior que a tolerancia
+  if abs(f(x)) <= epsilon:
+    return x
+  
+  #inicia contador
+  k = 1
+  
+  #loop enquanto k dentro do limite de iterações
+  while k <= Iter:
+    
+    #x1 é a solução, recebe o chute inicial - f(chute)/derivada de f(chute)
+    x1 = x - f(x)/df(x)
+
+    #se f(solucao)<= tolerância retorna x1
+    if abs(f(x1)) <= epsilon:
+      return(x1)
+    
+    #atualiza x para a solucao atual e k para k+1
+    x = x1
+    k = k+1
+    #mensagem de erro
+  print("Erro: máximo de iterações atingido")
+  return x1
+
+#vetor y
+y_dados = [10.179, 10.073, 10.505, 10.022, 10.041, 10.557, 10.147, 10.408, 9.785, 9.860]
+
+#função f
+mu = symbols('mu')
+n = len(y_dados)
+soma = sum((y_i - mu)**2 / (mu**2 * y_i) for y_i in y_dados)
+f_sim = soma - 1/2
+
+#derivada
+df_sim = diff(f_sim, mu)
+
+#converter funções para numéricas 
+f_num = lambdify(mu, f_sim, 'numpy')
+df_num = lambdify(mu, df_sim, 'numpy')
+
+#chute aleatório
+chute_inicial = 20 
+#chama newton
+raiz = Newton(f_num, df_num, chute_inicial, 0.0001, 50) 
+print(round(raiz, 3))
+
+#checagem
+print(f_num(35.295))
+```
+
+{29} Resolva o seguinte sistema de equações não lineares usando o método de Newton.
+
+$$
+x+y-xy+2=0
+$$
+$$
+x*exp(-y)-1=0
+$$
+
+A escolha de valor inicial é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|xi+1-xi| < epsilon$, onde $epsilon$ é o erro tolerado. Use tolerância de 0.0001. A sua resposta são as duas raízes \^x e \^y Use três casas decimais se necessário.
+
+```{python}
+
+## USEI IA, NÃO ENTENDI COMO FAZ!
+import numpy as np
+import matplotlib.pyplot as plt
+from sympy import symbols, exp, diff, lambdify
+
+def newton_sistema(F, J, x0, tol=0.0001, max_iter=100):
+    x = np.array(x0, dtype=float)
+    
+    for i in range(max_iter):
+        # Avaliar F e J no ponto atual
+        Fx = np.array([f(*x) for f in F])
+        Jx = np.array([[j(*x) for j in row] for row in J])
+        
+        # Resolver J * delta = -F
+        delta = np.linalg.solve(Jx, -Fx)
+        
+        x_new = x + delta
+        
+        if np.linalg.norm(delta) < tol:
+            return x_new
+        
+        x = x_new
+    
+    return x
+
+# Definir funções e Jacobiana numericamente
+x_sym, y_sym = symbols('x y')
+f1_sym = x_sym + y_sym - x_sym*y_sym + 2
+f2_sym = x_sym * exp(-y_sym) - 1
+
+f1_num = lambdify([x_sym, y_sym], f1_sym, 'numpy')
+f2_num = lambdify([x_sym, y_sym], f2_sym, 'numpy')
+
+# Jacobiana
+J11 = diff(f1_sym, x_sym)
+J12 = diff(f1_sym, y_sym)
+J21 = diff(f2_sym, x_sym)
+J22 = diff(f2_sym, y_sym)
+
+J11_num = lambdify([x_sym, y_sym], J11, 'numpy')
+J12_num = lambdify([x_sym, y_sym], J12, 'numpy')
+J21_num = lambdify([x_sym, y_sym], J21, 'numpy')
+J22_num = lambdify([x_sym, y_sym], J22, 'numpy')
+
+F = [f1_num, f2_num]
+J = [[J11_num, J12_num], [J21_num, J22_num]]
+
+# Chute inicial
+x0 = [0.5, 0.5]  # exemplo
+raiz = newton_sistema(F, J, x0)
+print(f"x = {raiz[0]:.3f}, y = {raiz[1]:.3f}")
+```
+
+### Método do Gradiente Descendente \[1x\]
+
+* Escolha um vetor x1 como inicial. Para i = 1,2,... até que o erro seja menor que um valor especificado, calcule
+$$ x^(i+1) = x^(1) - alpha f(x^(i))$$
+* Implementação computacional
+
+```{r}
+#função gradiente descendente recebe fx, x1, alpha, máximo de iterações e a tolerancia
+grad_des <- function(fx, x1, alpha, max_iter = 100, tol = 1e-04) {
+# cria-se uma matriz solução
+solucao <- matrix(NA, ncol = length(x1), nrow = max_iter)
+#que recebe x1, um vetor com um chute inicial maximo e mínimo
+solucao[1,] <- x1
+#no loop for preenchemos a matriz com soluções, que são o valor da solução anterior - alpha * função original(solução anterior)
+for(i in 1:c(max_iter-1)) {
+solucao[i+1,] <- solucao[i,] - alpha*fx(solucao[i,])
+#se a solução atual - a solução anterior for menor que a tolerância, o loop para e retorna a solução encontrada
+if( sum(abs(solucao[i+1,] - solucao[i,])) <= tol) break
+}
+return(solucao)
+}
+
+#funções f(x)
+fx <- function(x) {
+#vetores que ela recebe
+y <- c(5.15, 6.40, 2.77, 5.72, 6.25, 3.45, 5.00, 6.86, 4.86, 3.72)
+z <- c(0.28, 0.78, 0.40, 0.88, 0.94, 0.04, 0.52, 0.89, 0.55, 0.45)
+#termos
+term1 <- - 2*sum(y - x[1] - x[2]*z)
+term2 <- -2*sum( (y - x[1] - x[2]*z)*z)
+#resultado
+out <- c(term1, term2)
+return(out)
+}
+#chama a função chama f(x)
+sol_grad <- grad_des(fx = fx, x1 = c(5, 0), alpha = 0.05, max_iter = 140)
+fx(x = sol_grad[137,])
+
+```
+
+
+19. Determine a raiz a esquerda do ponto crítico da equação: $$f(\mu, y_i) =  -\left( \sum_{i=1}^n   \frac{(y_i - \mu)^2}{\mu^2 y_i}\right) + 5.$$
+
+usando o método do gradiente descendente. A escolha de valor inicial e do parâmetro de tuning é parte da questão. Como critério para parada utilize o erro estimado, ou seja, $|x_{i+1} - x_{i} | < \epsilon$, onde $\epsilon$ é o erro tolerado. Use tolerância de $0.0001$. A sua resposta é o valor da raiz use três casas decimais se necessário. Na equação os valores para $y_i$ são dados abaixo.
+
+y = [1] 10.179 10.073 10.505 10.022 10.041 10.557 10.147 10.408  9.785  9.860
+```{r}
+grad_des <- function(fx, x1, alpha, max_iter = 100, tol = 1e-04) {
+  solucao <- numeric(max_iter)
+  solucao[1] <- x1
+  
+  for(i in 1:(max_iter-1)) {
+    solucao[i+1] <- solucao[i] - alpha * fx(solucao[i])
+    if(abs(solucao[i+1] - solucao[i]) <= tol) break
+    print(solucao[i+1])
+  }
+  return(solucao)
+}
+
+# Derivada de f(μ)
+fx <- function(mu) {
+  y <- c(10.179, 10.073, 10.505, 10.022, 10.041, 10.557, 10.147, 10.408, 9.785, 9.860)
+  
+  f <- function(m) {
+    if(m <= 0) return(1e10)
+    return(-sum((y - m)^2 / (m^2 * y)) + 5)
+  }
+  
+  h <- 1e-6
+  return((f(mu + h) - f(mu)) / h)
+}
+
+sol_grad <- grad_des(fx = fx, x1 = 5, alpha = 0.01, max_iter = 5000)
+raiz <- tail(sol_grad[!is.na(sol_grad)], 1)
+print(raiz)
+```
+```{r}
+y <- c(10.179, 10.073, 10.505, 10.022, 10.041, 10.557, 10.147, 10.408, 9.785, 9.860)
+mu <- 10.16
+resultado <- -sum((y - mu)^2 / (mu^2 * y)) + 5
+print(resultado)
+```
+
+{18} Determine a raiz a esquerda do ponto crítico da equação:
+$$f(mu, y1)= sum * 2 {yi log(yi/mi/mu) + (m-yi) log(1-yi/mu/1-mu)} - 3.84$$ 
+
+usando o método do gradiente descendente. A escolha de valor inicial e do parâmetro de tuning é parte da questão. Como critério para parada utilize o erro estimado, ou seja,$|xi+1-xi| <  epsilon$, onde $epsilon$ é o erro tolerado. Use tolerância de 0.0001. A sua resposta é o valor da raiz use três casas decimais se necessário. Na equação os valores para yi são dados abaixo. Dica: A função subjacente (que deu origem a equação a ser resolvida) está sendo maximizada.
+
+y
+
+##  [1] 4 6 5 7 7 2 5 7 5 5
+
+```{python}
+#não funciona
+import numpy as np
+
+def grad_des(fx, x1, y, m, alpha, max_iter=100, tol=1e-04):
+    # Cria uma matriz solução
+    solucao = np.full((max_iter, len(x1)), np.nan)
+    # Recebe x1, um vetor com um chute inicial
+    solucao[0] = x1
+    
+    # Loop for preenche a matriz com soluções
+    for i in range(max_iter-1):
+        solucao[i+1] = solucao[i] - alpha * fx(solucao[i], y, m)
+        solucao[i+1] = np.clip(solucao[i+1], 0.01, 0.99)
+        # Critério de parada
+        if np.sum(np.abs(solucao[i+1] - solucao[i])) <= tol:
+            break
+    print(solucao)
+    return solucao
+
+# Função f(x)
+y = np.array([4, 6, 5, 7, 7, 2, 5, 7, 5, 5])
+m = 7
+mu_inicial = max(y/m) + 0.05
+
+def fx(mu, y, m):    
+    mu = np.array(mu)
+    if np.any(mu <= 0) or np.any(mu >= 1):
+        return np.inf
+    
+    # Verificar se argumentos dos logs são positivos
+    if np.any((y / m) / mu <= 0) or np.any((1 - y / mu) <= 0) or np.any((1 - mu) <= 0):
+        return np.inf
+    
+    resultado = 2 * np.sum(y * np.log((y / m) / mu) + (m - y) * np.log((1 - y / mu) / (1 - mu)))
+    return resultado - 3.84
+
+# Chama a função grad_des
+sol_grad = grad_des(fx=fx, x1=np.array([mu_inicial]), y = y,  m = m, alpha=0.001, max_iter=140)
+
+# Pega a última solução não vazia
+ultima_solucao = sol_grad[~np.isnan(sol_grad).any(axis=1)][-1]
+print(fx(ultima_solucao, y, m))
+```
+
+### Múltipla escolha \[10x questoes\]
+
+2.  {3} Sobre o método de Newton é correto afirmar:\
+    { } a. É um método de confinamento e supõe-se que a função seja contínua, diferenciável e que a solução está no intervalo inicial.\
+    { } b. É um método de confinamento e supõe-se que a função seja contínua, diferenciável e que a solução está perto do valor inicial.\
+    { } c. É um método aberto e supõe-se que a função seja contínua, diferenciável e que a solução está no intervalo inicial.\
+    {X} d. É um método aberto e supõe-se que a função seja contínua, diferenciável e que a solução está perto do valor inicial.\
+    { } e. É um método de confinamento em que não há necessidade da função ser contínua ou diferenciável.\
