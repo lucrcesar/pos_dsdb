@@ -1,0 +1,222 @@
+---
+title: "Lista 4 - Probabilidades"
+format: html
+editor: visual
+---
+
+{Lucio:1}\
+Considere uma variável aleatória $X$ que segue distribuição Normal com média 100 e variância 100. Obtenha $P(X<95)$. Use duas casas decimais.\
+{ } a. 0,41\
+{ } b. 0,50\
+{ } c. 0,31\
+{ } d. 0,11\
+{ } e. 0,91\
+
+```{r}
+
+```
+
+<!-- -->
+
+{Lucio:2}\
+Considere uma variável aleatória $X$ que segue distribuição Binomial com $n=10$ e $p=0,35$. Obtenha $P(X=7)$.\
+{ } a. 0,20.\
+{ } b. 0,32.\
+{ } c. 0,75.\
+{ } d. 0,05.\
+{ } e. 0,02.\
+
+```{r}
+
+```
+
+<!-- -->
+
+{Lucio:3}\
+Selecione a frase que melhor descreve uma variável aleatória?\
+{ } a. Elemento que compõe a amostra.\
+{ } b. Descrição numérica do resultado de um experimento aleatório.\
+{ } c. Descrição da chance de ocorrência do resultado de um experimento aleatório.\
+{ } d. Elemento que compõe a população.\
+{ } e. Medida descritiva de posição central.\
+
+<!-- -->
+
+{Lucio:4}\
+Considere uma variável aleatória $X$ que segue distribuição Poisson com $\lambda=10$. Obtenha $P(X = 7)$.\
+{ } a. 0,01\
+{ } b. 0,40\
+{ } c. 0,02\
+{ } d. 0,91\
+{ } e. 0,09\
+
+```{r}
+
+```
+
+<!-- -->
+
+{Lucio:5}\
+O que é uma função de probabilidades de uma variável aleatória discreta?\
+{ } a. É a função que atribui probabilidades a cada um dos possíveis valores de uma variável aleatória contínua.\
+{ } b. É a função que atribui valores a cada um dos possíveis desfechos de um fenômeno aleatório.\
+{ } c. É a função que atribui probabilidades a cada um dos possíveis valores de uma variável aleatória discreta.\
+{ } d. É uma medida descritiva utilizada para variáveis discretas.\
+{ } e. É um modelo que permite prever resultados futuros do fenômeno aleatório.\
+
+<!-- -->
+
+{Lucio:6}\
+Selecione a frase que melhor descreve a independência estatística entre duas variáveis aleatórias.\
+{ } a. Quando a área abaixo da curva de ao menos uma delas é menor que 1.\
+{ } b. Quando as variáveis são de tipos diferentes.\
+{ } c. Quando a ocorrência de qualquer valor de uma delas altera a probabilidade de valores da outra.\
+{ } d. Quando a ocorrência de qualquer valor de uma delas não altera a probabilidade de valores da outra.\
+{ } e. Quando existem probabilidades maiores que 1.\
+
+<!-- -->
+
+{Lucio:7}\
+Uma variável aleatória é considerada discreta se:\
+{ } a. Assume apenas valores inteiros.\
+{ } b. Os desfechos do fenômeno são descritos por categorias.\
+{ } c. Assume apenas valores reais.\
+{ } d. Seu espaço amostral é discreto.\
+{ } e. Seu espaço amostral é contínuo.\
+
+<!-- -->
+
+{Lucio:8}\
+Considere uma variável aleatória $X$ que segue distribuição Normal com média 2 e variância 5. Obtenha $P(1 < X < 5)$.\
+{ } a. 0,58\
+{ } b. 0,14\
+{ } c. 0,42\
+{ } d. 0,82\
+{ } e. 0,12\
+```{r}
+
+```
+
+<!-- -->
+
+{Lucio:9}\
+Quais são as suposições que devem ser atendidas para assumir que uma variável aleatória segue distribuição de Poisson?\
+{ } a. O desfecho de interesse é o número de eventos em um domínio. A taxa de ocorrência é variável. Existe independência entre domínios disjuntos. A taxa é proporcional ao tamanho do domínio.\
+{ } b. O desfecho de interesse é um valor limitado entre 0 e 100. A taxa de ocorrência é constante. Existe independência entre domínios disjuntos. A taxa é proporcional ao tamanho do domínio.\
+{ } c. O desfecho de interesse é o número de eventos em um domínio. A taxa de ocorrência é variável. Não existe independência entre domínios disjuntos. A taxa é proporcional ao tamanho do domínio.\
+{ } d. O desfecho de interesse é o número de eventos em um domínio. A taxa de ocorrência é constante. Existe independência entre domínios disjuntos. A taxa é proporcional ao tamanho do domínio.\
+{ } e. O desfecho de interesse é um valor limitado entre 0 e 100. A taxa de ocorrência é variável. Não existe independência entre domínios disjuntos. A taxa varia.\
+<!-- -->
+
+{Lucio:10}\
+Quais são as características da distribuição Normal?\
+{ } a. Modela uma variável aleatória contínua não limitada de comportamento simétrico.\
+{ } b. Modela uma variável aleatória discreta não limitada de comportamento simétrico.\
+{ } c. Modela uma variável aleatória contínua não limitada de comportamento assimétrico à esquerda.\
+{ } d. Modela uma variável aleatória contínua limitada entre 0 e 1 de comportamento simétrico.\
+{ } e. Modela uma variável aleatória contínua limitada entre 0 e 1 de comportamento assimétrico.\
+
+<!-- -->
+
+{Lucio:11}\
+Selecione a frase que melhor descreve as distribuições de probabilidades?\
+{ } a. São modelos estatísticos para avaliar associação entre variáveis.\
+{ } b. São fórmulas para obter medidas de posição central.\
+{ } c. São fórmulas para obter medidas de dispersão.\
+{ } d. São fórmulas desenvolvidas para modelar problemas específicos e que não podem ser utilizadas para outros problemas.\
+{ } e. São fórmulas gerais para tratar várias situações similares e que permitem determinar probabilidades de eventos.\
+
+<!-- -->
+
+{Lucio:12}\
+Uma variável aleatória é considerada contínua se:\
+{ } a. Assume apenas valores inteiros.\
+{ } b. Os desfechos do fenômeno são descritos por categorias.\
+{ } c. Assume apenas valores reais.\
+{ } d. Seu espaço amostral é discreto.\
+{ } e. Seu espaço amostral é contínuo.\
+
+<!-- -->
+
+{Lucio:13}\
+Quais são as propriedades de uma função densidade de probabilidade?\
+{ } a. A função é não negativa e a área total sob a curva é maior que 1.\
+{ } b. A função é não negativa e a área total sob a curva é menor que 1.\
+{ } c. A função pode assumir valores negativos e a área total sob a curva é igual a 1.\
+{ } d. A função pode assumir valores negativos e a área total sob a curva é menor que 1.\
+{ } e. A função é não negativa e a área total sob a curva é igual a 1.\
+
+<!-- -->
+
+{Lucio:14}\
+Que propriedades uma função de probabilidades deve atender?\
+{ } a. A probabilidade de cada valor deve estar entre -1 e 1 e a soma de todas as probabilidades é igual a 1.\
+{ } b. A probabilidade de cada valor deve estar entre 0 e 1 e a soma de todas as probabilidades é maior que 1.\
+{ } c. A probabilidade de cada valor deve estar entre 0 e 1 e a soma de todas as probabilidades é igual a 1.\
+{ } d. A probabilidade de cada valor deve estar entre -1 e 1 e a soma de todas as probabilidades é maior que 1.\
+{ } e. A probabilidade de cada valor deve estar entre 0 e 100.\
+
+<!-- -->
+
+{Lucio:15}\
+Selecione a frase que melhor descreve a ideia de correlação.\
+{ } a. É uma probabilidade.\
+{ } b. É uma medida da associação entre duas variáveis aleatórias livre das unidades de medida. Assume valores entre -1 e 1.\
+{ } c. É uma medida de posição central da distribuição conjunta de duas variáveis.\
+{ } d. É uma medida da associação entre duas variáveis aleatórias impactada pelas unidades de medida.\
+{ } e. É uma medida de variabilidade da distribuição conjunta de duas variáveis.\
+
+<!-- -->
+
+{Lucio:16}\
+Se temos um conjunto de variáveis contínuas não limitadas, individualmente Normais e que apresentam relação linear entre si, qual distribuição de probabilidades é uma alternativa para modelagem?\
+{ } a. Multinomial.\
+{ } b. Gama.\
+{ } c. Beta.\
+{ } d. Normal Multivariada.\
+{ } e. Poisson.\
+
+<!-- -->
+
+{Lucio:17}\
+Quando uma variável aleatória tem distribuição de Bernoulli?\
+{ } a. Quando apresenta apenas dois resultados possíveis, representados por 0 (fracasso ou negativo) e 1 (sucesso ou positivo).\
+{ } b. Quando apresenta apenas um resultado possível.\
+{ } c. Quando apresenta mais de dois resultados possíveis.\
+{ } d. Quando trata-se de diversas repetições de experimentos que apresentam apenas dois resultados possíveis, representados por 0 (fracasso ou negativo) e 1 (sucesso ou positivo).\
+{ } e. Quando a variável é quantitativa contínua.\
+
+<!-- -->
+
+{Lucio:18}\
+Suponha duas variáveis aleatórias $X$ e $Y$ e que você tenha em mãos a distribuição conjunta dessas variáveis. Como obter as distribuições marginais?\
+{ } a. O produtório em $y$ resulta na marginal de $x$. O produtório em $x$ resulta na marginal de $y$.\
+{ } b. O somatório em $y$ resulta na marginal de $x$. O somatório em $x$ resulta na marginal de $y$.\
+{ } c. O produtório em $y$ resulta na marginal de $y$. O produtório em $x$ resulta na marginal de $x$.\
+{ } d. O somatório em $y$ resulta na marginal de $y$. O somatório em $x$ resulta na marginal de $x$.\
+{ } e. Não é possível obter a marginal com base na conjunta.\
+
+<!-- -->
+
+{Lucio:19}\
+Considere uma variável aleatória $X$ que segue distribuição Poisson com $\lambda=150$. Obtenha $P(X > 150)$.\
+{ } a. 0,80\
+{ } b. 0,68\
+{ } c. 0,48\
+{ } d. 0,61\
+{ } e. 0,41\
+```{r}
+
+```
+
+<!-- -->
+
+{Lucio:20}\
+Que nome é dado à função que atribui probabilidades à intervalos de valores de uma variável aleatória contínua?\
+{ } a. Função de probabilidade.\
+{ } b. Função geradora.\
+{ } c. Função de distribuição acumulada.\
+{ } d. Função densidade de probabilidade.\
+{ } e. Função probabilística.\
+
+<!-- -->
